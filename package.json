@@ -1,0 +1,31 @@
+{
+  "name": "bench-mark",
+  "version": "0.1.0",
+  "description": "Simple node benchmarking",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec",
+	"cover": "node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- -R spec test/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0x59/bench-mark.git"
+  },
+  "keywords": [
+    "node",
+    "javascript",
+    "benchmark"
+  ],
+  "author": "0x59 <0x59.sw@gmail.com> (https://github.com/0x59)",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/0x59/bench-mark/issues"
+  },
+  "homepage": "https://github.com/0x59/bench-mark#readme",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "coveralls": "^3.0.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^4.0.1"
+  }
+}
