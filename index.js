@@ -1,11 +1,11 @@
 
 class Test {
 
-	constructor( name = '#Untitled', fn = null, inject = {} ) {
+	constructor( name = '#Untitled', fn = null, injection = {} ) {
 		this._ = {
 			name,
 			fn,
-			inject,
+			injection,
 			runs: [],
 			iterations: 0
 		}
@@ -13,11 +13,11 @@ class Test {
 
 	_run() {
 		let t, v, ms, ns,
-			{ name, fn, iterations, inject } = this._
+			{ name, fn, iterations, injection } = this._
 
 		t = process.hrtime()
 		
-		v = fn(name, iterations, inject)
+		v = fn(name, iterations, injection)
 		
 		;[ ms, ns ] = process.hrtime(t)
 
@@ -39,6 +39,16 @@ class Test {
 		return this
 	}
 
+	runs() {
+		return this._.runs.slice()
+	}
+
+	data() {
+		return Object.assign({}, this._, {
+			runs: this.runs()
+		})
+	}
+
 	reset() {
 		Object.assign(this._, {
 			runs: [],
@@ -56,10 +66,6 @@ class Test {
 		return this._.name
 	}
 
-	results() {
-		return this._.runs.slice()
-	}
-
 }
 
 
@@ -73,9 +79,9 @@ class Suite {
 		}
 	}
 
-	test( name, fn, inject ) {
+	test( name, fn, injection ) {
 		if( !this._.tests.has(name) ) {
-			this._.tests.set(name, new Test(name, fn, inject))
+			this._.tests.set(name, new Test(name, fn, injection))
 
 			return this
 		}
@@ -89,14 +95,20 @@ class Suite {
 		}
 	}
 
-	results() {
-		let results = new Map()
+	runs() {
+		let runs = new Map()
 
 		for( let [ name, test ] of this._.tests.entries() ) {
-			results.set(name, test.results())
+			runs.set(name, test.runs())
 		}
 
-		return results
+		return runs
+	}
+
+	data() {
+		return Object.assign({}, this._, {
+			tests: new Map(this._.tests)
+		})
 	}
 
 }
@@ -131,6 +143,40 @@ class Bench {
 		return this
 	}
 
+	forEach( fn ) {
+		let	suiteData,
+			testData,
+			benchName = this.name(),
+			suiteCount = this._.suites.size,
+			suiteNumber = 0
+		
+		for( let [ suiteName, suite ] of this._.suites.entries() ) {
+			let	testCount,
+				testNumber = 0
+
+			++suiteNumber
+			suiteData = suite.data()
+			testCount = suiteData.tests.size
+			
+			for( let [ testName, test ] of suiteData.tests.entries() ) {				
+				++testNumber
+				testData = test.data()
+
+				fn({
+					benchName,
+					suiteName,
+					testName,
+					suiteData,
+					suiteNumber,
+					suiteCount,
+					testData,
+					testNumber,
+					testCount
+				})
+			}
+		}
+	}
+
 	name( name = '' ) {
 		if( name ) {
 			this._.name = name
@@ -139,7 +185,7 @@ class Bench {
 		return this._.name
 	}
 
-	firstRun() {
+	/*firstRun() {
 		let	suiteResults,
 			testResults,
 			firstRun = []
@@ -159,7 +205,7 @@ class Bench {
 		})
 
 		return this
-	}
+	}*/
 
 }
 

@@ -15,4 +15,11 @@ fresh
 
 fresh
 	.mark()
-	.firstRun()
+	.forEach(( data ) => {
+		let	{	benchName,
+				suiteName,
+				testName,
+			} = data
+
+		console.log(`${benchName} | ${suiteName} | ${testName}`)
+	})
