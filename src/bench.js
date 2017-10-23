@@ -22,6 +22,14 @@ class Bench {
 		return this._.suites.get(name)
 	}
 
+	name( name = '' ) {
+		if( name ) {
+			this._.name = name
+		}
+
+		return this._.name
+	}
+
 	mark() {
 		for( let suite of this._.suites.values() ) {
 			suite.run()
@@ -31,7 +39,9 @@ class Bench {
 	}
 
 	forEach( fn ) {
-		let	suiteData,
+		let	data,
+			userData,
+			suiteData,
 			testData,
 			benchName = this.name(),
 			suiteCount = this._.suites.size,
@@ -49,7 +59,7 @@ class Bench {
 				++testNumber
 				testData = test.data()
 
-				fn({
+				data = fn({
 					benchName,
 					suiteName,
 					testName,
@@ -60,39 +70,20 @@ class Bench {
 					testNumber,
 					testCount
 				})
-			}
-		}
-	}
-
-	name( name = '' ) {
-		if( name ) {
-			this._.name = name
-		}
-
-		return this._.name
-	}
-
-	/*firstRun() {
-		let	suiteResults,
-			testResults,
-			firstRun = []
-		
-		for( let [ suiteName, suite ] of this._.suites.entries() ) {
-			suiteResults = suite.results()
-			
-			for( let [ testName, testResults ] of suiteResults.entries() ) {
-				let { ms, ns } = testResults[0]
 				
-				firstRun.push(`${this.name()} - ${suiteName} - ${testName} time: ${this._time(ms, ns)}`)
+				if( typeof data === 'object' ) {
+					if( data.suite ) {
+						suite.data(data.suite)
+						suiteData = suite.data()
+					}
+
+					if( data.test ) {
+						test.data(data.test)
+					}
+				}
 			}
 		}
-
-		firstRun.forEach(( v ) => {
-			console.log(v)
-		})
-
-		return this
-	}*/
+	}
 
 }
 

@@ -6,7 +6,8 @@ class Test {
 			fn,
 			injection,
 			runs: [],
-			iterations: 0
+			iterations: 0,
+			userData: {}
 		}
 	}
 
@@ -42,16 +43,22 @@ class Test {
 		return this._.runs.slice()
 	}
 
-	data() {
-		return Object.assign({}, this._, {
-			runs: this.runs()
-		})
+	data( userData ) {
+		if( userData ) {
+			Object.assign(this._.userData, userData)
+
+		} else {
+			return Object.assign({}, this._, {
+				runs: this.runs()
+			})
+		}
 	}
 
 	reset() {
 		Object.assign(this._, {
 			runs: [],
-			iterations: 0
+			iterations: 0,
+			userData: {}
 		})
 
 		return this
