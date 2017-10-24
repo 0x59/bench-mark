@@ -10,10 +10,6 @@ class Bench {
 		}
 	}
 
-	_time( ms = 0, ns = 0 ) {
-		return ms + ns / 1e6
-	}
-
 	suite( name ) {
 		if( !this._.suites.has(name) ) {
 			this._.suites.set(name, new Suite(name))

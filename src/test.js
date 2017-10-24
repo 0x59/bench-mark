@@ -1,3 +1,6 @@
+const
+	_ = require('./util.js')
+
 class Test {
 
 	constructor( name = '#Untitled', fn = null, injection = {} ) {
@@ -5,10 +8,11 @@ class Test {
 			name,
 			fn,
 			injection,
-			runs: [],
-			iterations: 0,
-			userData: {}
+			iterations: 0
 		}
+
+		_.makeNonEnumProp(this._, 'runs', [])
+		_.makeNonEnumProp(this._, 'userData', {})
 	}
 
 	_run() {
@@ -44,13 +48,28 @@ class Test {
 	}
 
 	data( userData ) {
-		if( userData ) {
+		if( typeof userData === 'object' ) {
+			/*for( let p of Object.keys(userData) ) {
+				this._.userData[p] = userData[p]
+			}*/
 			Object.assign(this._.userData, userData)
 
 		} else {
-			return Object.assign({}, this._, {
+			let ret = {}
+
+			for( let p of Object.getOwnPropertyNames(this._) ) {
+				if( p === 'runs' ) {
+					ret[p] = this.runs()
+				
+				} else {
+					ret[p] = this._[p]
+				}
+			}
+
+			return ret
+			/*return Object.assign({}, this._, {
 				runs: this.runs()
-			})
+			})*/
 		}
 	}
 
